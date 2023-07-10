@@ -8,7 +8,6 @@ import { UserI } from './../types'
 export const usersController = async (req: IncomingMessage, res: ServerResponse): Promise<void> => {
   const userId = getUserId(req);
   let user;
-
   if (userId) {
     if (!validate(userId)) {
       res.statusCode = STATUS_CODES.BAD_REQUEST;
@@ -22,6 +21,13 @@ export const usersController = async (req: IncomingMessage, res: ServerResponse)
       res.end(ERROR_MESSAGES.USER_NOT_FOUND);
       return;
     }
+  }
+
+  let body = await getBody(req);
+  if (body && !isUserValid(body as UserI)) {
+    res.statusCode = STATUS_CODES.BAD_REQUEST;
+    res.end(ERROR_MESSAGES.MISSED_REQUIRED_FIELDS);
+    return;
   }
 
   switch (req.method) {
@@ -40,14 +46,6 @@ export const usersController = async (req: IncomingMessage, res: ServerResponse)
       break;
     }
     case HTTP_METHODS.POST: {
-      const body = await getBody(req);
-
-      if (!isUserValid(body as UserI)) {
-        res.statusCode = STATUS_CODES.BAD_REQUEST;
-        res.end(ERROR_MESSAGES.MISSED_REQUIRED_FIELDS);
-        break;
-      }
-
       const user = usersDB.addUser({ ...body as UserI, id: v4() });
       const dataToSend = JSON.stringify(user);
       res.statusCode = STATUS_CODES.CREATED;
@@ -55,14 +53,6 @@ export const usersController = async (req: IncomingMessage, res: ServerResponse)
       break;
     }
     case HTTP_METHODS.PUT: {
-      const body = await getBody(req);
-
-      if (!isUserValid(body as UserI)) {
-        res.statusCode = STATUS_CODES.BAD_REQUEST;
-        res.end(ERROR_MESSAGES.MISSED_REQUIRED_FIELDS);
-        break;
-      }
-
       const updatedUser = usersDB.updateUser(body as UserI);
       const dataToSend = JSON.stringify(updatedUser);
       res.statusCode = STATUS_CODES.OK;
