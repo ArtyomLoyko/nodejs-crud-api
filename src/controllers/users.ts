@@ -54,8 +54,21 @@ export const usersController = async (req: IncomingMessage, res: ServerResponse)
       res.end(dataToSend);
       break;
     }
-    case HTTP_METHODS.PUT:
+    case HTTP_METHODS.PUT: {
+      const body = await getBody(req);
+
+      if (!isUserValid(body as UserI)) {
+        res.statusCode = STATUS_CODES.BAD_REQUEST;
+        res.end(ERROR_MESSAGES.MISSED_REQUIRED_FIELDS);
+        break;
+      }
+
+      const updatedUser = usersDB.updateUser(body as UserI);
+      const dataToSend = JSON.stringify(updatedUser);
+      res.statusCode = STATUS_CODES.OK;
+      res.end(dataToSend);
       break;
+    }
     case HTTP_METHODS.DELETE:
       break;
   }

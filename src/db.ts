@@ -19,6 +19,12 @@ class UsersDB {
     this.users.push(user);
     return user;
   }
+
+  updateUser(user: UserI): UserI {
+    const userIndex = this.users.findIndex(u => u.id === user.id);
+    this.users[userIndex] = user;
+    return user;
+  }
 }
 
 export const usersDB = new UsersDB();
