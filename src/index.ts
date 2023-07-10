@@ -7,7 +7,8 @@ const PORT = process.env.PORT || 4000
 
 const app = http.createServer((req: IncomingMessage, res: ServerResponse): void => {
   try {
-    const route = getRoute(req)
+    res.setHeader("Content-Type", "application/json");
+    const route = getRoute(req);
 
     switch (route) {
       case ROUTES.USERS:

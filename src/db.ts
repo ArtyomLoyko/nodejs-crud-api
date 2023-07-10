@@ -14,6 +14,11 @@ class UsersDB {
   getUserById(id: string): UserI | undefined {
     return this.users.find(u => u.id === id);
   }
+
+  addUser(user: UserI): UserI {
+    this.users.push(user);
+    return user;
+  }
 }
 
 export const usersDB = new UsersDB();
