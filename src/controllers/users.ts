@@ -69,7 +69,11 @@ export const usersController = async (req: IncomingMessage, res: ServerResponse)
       res.end(dataToSend);
       break;
     }
-    case HTTP_METHODS.DELETE:
+    case HTTP_METHODS.DELETE: {
+      usersDB.deleteUser(userId);
+      res.statusCode = STATUS_CODES.NO_CONTENT;
+      res.end();
       break;
+    }
   }
 }

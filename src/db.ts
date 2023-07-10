@@ -25,6 +25,10 @@ class UsersDB {
     this.users[userIndex] = user;
     return user;
   }
+
+  deleteUser(userId: string): void {
+    this.users = this.users.filter(u => u.id === userId);
+  }
 }
 
 export const usersDB = new UsersDB();
